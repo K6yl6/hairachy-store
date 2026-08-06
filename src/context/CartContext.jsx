@@ -8,16 +8,30 @@ import {
 
 const CartContext = createContext(null);
 
+function getColorCode(product) {
+  if (typeof product.color === "string") {
+    return product.color;
+  }
+
+  return (
+    product.color?.code ||
+    product.colorCode ||
+    "default"
+  );
+}
+
 function createCartKey(product) {
   const productId = product.id;
-  const length = product.length ?? "default";
+  const colorCode = getColorCode(product);
+  const length = product.length || "default";
 
-  return `${productId}-${length}`;
+  return `${productId}-${colorCode}-${length}`;
 }
 
 function loadStoredCart() {
   try {
-    const storedCart = localStorage.getItem("hairachy-cart");
+    const storedCart =
+      localStorage.getItem("hairachy-cart");
 
     if (!storedCart) {
       return [];
@@ -31,9 +45,8 @@ function loadStoredCart() {
 
     return parsedCart.map((item) => ({
       ...item,
-      cartKey:
-        item.cartKey ||
-        createCartKey(item),
+
+      cartKey: createCartKey(item),
 
       price: Number(item.price) || 0,
 
@@ -68,9 +81,7 @@ export function CartProvider({ children }) {
       Number(product.quantity) || 1
     );
 
-    const cartKey =
-      product.cartKey ||
-      createCartKey(product);
+    const cartKey = createCartKey(product);
 
     setCart((currentCart) => {
       const existingItem = currentCart.find(
@@ -114,7 +125,8 @@ export function CartProvider({ children }) {
   }
 
   function updateQuantity(cartKey, amount) {
-    const quantityChange = Number(amount) || 0;
+    const quantityChange =
+      Number(amount) || 0;
 
     setCart((currentCart) =>
       currentCart.map((item) => {
@@ -122,15 +134,14 @@ export function CartProvider({ children }) {
           return item;
         }
 
-        const newQuantity = Math.max(
-          1,
-          Number(item.quantity) +
-            quantityChange
-        );
-
         return {
           ...item,
-          quantity: newQuantity,
+
+          quantity: Math.max(
+            1,
+            Number(item.quantity) +
+              quantityChange
+          ),
         };
       })
     );
@@ -186,8 +197,6 @@ export function CartProvider({ children }) {
     [cart]
   );
 
-  const total = subtotal;
-
   const value = {
     cart,
     addToCart,
@@ -196,7 +205,7 @@ export function CartProvider({ children }) {
     setItemQuantity,
     clearCart,
     subtotal,
-    total,
+    total: subtotal,
     itemCount,
   };
 

@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   ArrowRight,
   CreditCard,
+  LoaderCircle,
   LockKeyhole,
   Mail,
   MapPin,
@@ -27,6 +28,23 @@ function formatCurrency(value) {
   return `GH₵${Number(value || 0).toLocaleString("en-GH")}`;
 }
 
+function getColorLabel(item) {
+  if (!item.color) {
+    return "";
+  }
+
+  if (typeof item.color === "string") {
+    return item.color;
+  }
+
+  return (
+    item.color.label ||
+    [item.color.name, item.color.code]
+      .filter(Boolean)
+      .join(" — ")
+  );
+}
+
 function Checkout() {
   const { cart, total } = useCart();
 
@@ -37,6 +55,9 @@ function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState(
     "paystack"
   );
+
+  const [isSubmitting, setIsSubmitting] =
+    useState(false);
 
   /*
    * No delivery charge is being assumed.
@@ -61,7 +82,7 @@ function Checkout() {
     }));
   }
 
-  function handleCheckout(event) {
+  async function handleCheckout(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
@@ -76,30 +97,90 @@ function Checkout() {
       return;
     }
 
-    /*
-     * PAYSTACK INTEGRATION POINT
-     *
-     * The following dynamic information will be sent to Paystack:
-     *
-     * customer.fullName
-     * customer.email
-     * customer.phone
-     * customer.address
-     * cart
-     * subtotal
-     * deliveryFee
-     * orderTotal
-     * paymentMethod
-     *
-     * Do not generate transaction references in the browser when
-     * a backend is added. The backend should create and verify
-     * the transaction.
-     */
+    if (isSubmitting) {
+      return;
+    }
 
-    toast.info("Paystack is not connected yet.", {
-      description:
-        "Your details were validated, but no order or payment was submitted.",
-    });
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(
+        "/api/paystack/initialize",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            customer: {
+              fullName:
+                customer.fullName.trim(),
+              email:
+                customer.email
+                  .trim()
+                  .toLowerCase(),
+              phone:
+                customer.phone.trim(),
+              address:
+                customer.address.trim(),
+              city:
+                customer.city.trim(),
+              deliveryNotes:
+                customer.deliveryNotes.trim(),
+            },
+
+            /*
+             * Only product identity, selected color and
+             * quantity are submitted. The server reads
+             * every price from the trusted catalogue.
+             */
+            cart: cart.map((item) => ({
+              id: item.id,
+
+              colorCode:
+                typeof item.color ===
+                "string"
+                  ? item.color
+                  : item.color?.code ||
+                    item.colorCode ||
+                    "",
+
+              quantity: Math.max(
+                1,
+                Number(item.quantity) || 1
+              ),
+            })),
+          }),
+        }
+      );
+
+      const data = await response
+        .json()
+        .catch(() => ({}));
+
+      if (
+        !response.ok ||
+        !data.authorizationUrl
+      ) {
+        throw new Error(
+          data.message ||
+            "Could not start the payment."
+        );
+      }
+
+      window.location.assign(
+        data.authorizationUrl
+      );
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Could not start the payment."
+      );
+
+      setIsSubmitting(false);
+    }
   }
 
   if (cart.length === 0) {
@@ -333,7 +414,7 @@ function Checkout() {
             <CheckoutSection
               number="03"
               title="Payment method"
-              description="Payment will be completed through Paystack after the integration is connected."
+              description="Pay securely through Paystack. Delivery is arranged and charged separately after payment."
               className="mt-16"
             >
               <label
@@ -595,6 +676,12 @@ function Checkout() {
                             text-white/50
                           "
                         >
+                          {getColorLabel(item) && (
+                            <span>
+                              Color: {getColorLabel(item)}
+                            </span>
+                          )}
+
                           {item.length && (
                             <span>
                               Length: {item.length}&quot;
@@ -654,7 +741,7 @@ function Checkout() {
 
                   {!hasDeliveryFee && (
                     <p className="mt-2 text-[10px] text-white/40">
-                      Before delivery charges
+                      Products only. Delivery is arranged later.
                     </p>
                   )}
                 </div>
@@ -672,6 +759,7 @@ function Checkout() {
 
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="
                   mt-9
                   flex
@@ -689,14 +777,30 @@ function Checkout() {
                   text-brand-black
                   transition-colors
                   hover:bg-[#d8cec4]
+                  disabled:cursor-wait
+                  disabled:opacity-65
                 "
               >
-                Continue to payment
+                {isSubmitting ? (
+                  <>
+                    <LoaderCircle
+                      size={16}
+                      strokeWidth={1.6}
+                      className="animate-spin"
+                    />
 
-                <ArrowRight
-                  size={16}
-                  strokeWidth={1.6}
-                />
+                    Opening secure payment
+                  </>
+                ) : (
+                  <>
+                    Continue to payment
+
+                    <ArrowRight
+                      size={16}
+                      strokeWidth={1.6}
+                    />
+                  </>
+                )}
               </button>
 
               <div
@@ -717,7 +821,7 @@ function Checkout() {
                   strokeWidth={1.5}
                 />
 
-                No payment is taken until Paystack opens
+                Delivery is arranged separately after payment
               </div>
             </div>
           </aside>

@@ -5,6 +5,7 @@ import Shop from "@/pages/Shop";
 import Contact from "@/pages/Contact";
 import NotFound from "@/pages/NotFound";
 import ProductDetails from "@/pages/ProductDetails";
+import PaymentCallback from "@/pages/PaymentCallback";
 
 
 function AppRoutes() {
@@ -38,7 +39,10 @@ function AppRoutes() {
         path="/shop" 
         element={<Shop />} 
       />
-
+<Route
+  path="/payment/callback"
+  element={<PaymentCallback />}
+/>
       <Route 
         path="/contact" 
         element={<Contact />} 

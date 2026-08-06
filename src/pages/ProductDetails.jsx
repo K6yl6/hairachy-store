@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   ArrowLeft,
@@ -11,52 +11,75 @@ import { toast } from "sonner";
 import products from "@/data/products";
 import { useCart } from "@/context/CartContext";
 
+function formatCurrency(value) {
+  return `GH₵${Number(value || 0).toLocaleString("en-GH")}`;
+}
+
 function ProductDetails() {
   const { id } = useParams();
   const { addToCart } = useCart();
 
   const product = products.find(
-    (item) => item.id === Number(id)
+    (item) => item.id === id
   );
 
-  const gallery = useMemo(() => {
-    if (!product) return [];
+  const [selectedColorCode, setSelectedColorCode] =
+    useState("");
 
-    if (Array.isArray(product.images) && product.images.length > 0) {
-      return product.images.filter(Boolean);
-    }
-
-    return product.image ? [product.image] : [];
-  }, [product]);
-
-  const [activeImage, setActiveImage] = useState("");
-  const [selectedLength, setSelectedLength] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     if (!product) return;
 
-    setActiveImage(gallery[0] || product.image);
-    setSelectedLength(product.lengths?.[0] ?? null);
+    setSelectedColorCode(
+      product.colors?.[0]?.code || ""
+    );
+
     setQuantity(1);
-  }, [product, gallery]);
+  }, [product]);
 
   if (!product) {
     return (
-      <main className="flex min-h-[70vh] items-center justify-center bg-brand-ivory px-6">
-        <div className="text-center">
-          <p className="text-xs uppercase tracking-[0.3em] text-brand-muted">
+      <main
+        className="
+          flex
+          min-h-[70vh]
+          items-center
+          justify-center
+          bg-brand-ivory
+          px-6
+          text-center
+        "
+      >
+        <div>
+          <p
+            className="
+              text-[10px]
+              font-semibold
+              uppercase
+              tracking-[0.3em]
+              text-brand-black/45
+            "
+          >
             Product unavailable
           </p>
 
-          <h1 className="mt-4 text-4xl font-semibold text-brand-black">
+          <h1
+            className="
+              mt-5
+              font-serif
+              text-5xl
+              font-medium
+              text-brand-black
+            "
+          >
             Product not found.
           </h1>
 
           <Link
             to="/shop"
             className="
-              mt-8
+              mt-9
               inline-flex
               items-center
               gap-2
@@ -78,14 +101,18 @@ function ProductDetails() {
     );
   }
 
-  const formattedPrice = new Intl.NumberFormat("en-GH", {
-    style: "currency",
-    currency: "GHS",
-    maximumFractionDigits: 0,
-  }).format(product.price);
+  const selectedColor =
+    product.colors?.find(
+      (color) => color.code === selectedColorCode
+    ) || product.colors?.[0];
+
+  const lineTotal =
+    Number(product.price) * quantity;
 
   function decreaseQuantity() {
-    setQuantity((current) => Math.max(1, current - 1));
+    setQuantity((current) =>
+      Math.max(1, current - 1)
+    );
   }
 
   function increaseQuantity() {
@@ -93,392 +120,403 @@ function ProductDetails() {
   }
 
   function handleAddToCart() {
+    if (!selectedColor) {
+      toast.error("Select a hair color.");
+      return;
+    }
+
     addToCart({
       ...product,
-      length: selectedLength,
+
+      color: {
+        name: selectedColor.name,
+        code: selectedColor.code,
+        label: selectedColor.label,
+      },
+
       quantity,
     });
 
-    toast.success("Added to your bag", {
-      description: `${product.name}${
-        selectedLength ? ` · ${selectedLength}"` : ""
-      }`,
-    });
-  }
+   toast(`Added to bag — ${product.name}`);
+  } 
 
   return (
-    <main className="min-h-screen bg-brand-ivory">
-      <section className="border-b border-brand-black/10">
-        <div className="mx-auto max-w-[1600px]">
-          <div className="grid lg:grid-cols-[minmax(0,1.2fr)_minmax(420px,0.8fr)]">
-            {/* Editorial gallery */}
-            <div className="bg-[#d8cec4]">
-              <div
-                className={`
-                  grid
-                  ${
-                    gallery.length > 1
-                      ? "lg:grid-cols-[96px_minmax(0,1fr)]"
-                      : ""
-                  }
-                `}
-              >
-                {/* Desktop thumbnails */}
-                {gallery.length > 1 && (
-                  <div
-                    className="
-                      order-2
-                      flex
-                      gap-3
-                      overflow-x-auto
-                      border-t
-                      border-black/10
-                      bg-brand-ivory
-                      p-4
-                      lg:order-1
-                      lg:flex-col
-                      lg:border-r
-                      lg:border-t-0
-                      lg:p-3
-                    "
-                  >
-                    {gallery.map((image, index) => {
-                      const selected = activeImage === image;
+    <main className="min-h-screen bg-brand-ivory text-brand-black">
+      <div
+        className="
+          mx-auto
+          grid
+          max-w-[1600px]
+          lg:grid-cols-[minmax(0,1.15fr)_minmax(420px,0.85fr)]
+        "
+      >
+        {/* Product image */}
+        <section className="relative bg-white">
+          <div
+            className="
+              relative
+              aspect-[4/5]
+              min-h-[560px]
+              overflow-hidden
+              lg:sticky
+              lg:top-[88px]
+              lg:h-[calc(100vh-88px)]
+              lg:aspect-auto
+            "
+          >
+            <img
+              src={product.image}
+              alt={product.name}
+              className="
+                h-full
+                w-full
+                object-contain
+                p-6
+                md:p-12
+                lg:p-16
+              "
+            />
 
-                      return (
-                        <button
-                          key={`${image}-${index}`}
-                          type="button"
-                          onClick={() => setActiveImage(image)}
-                          aria-label={`View product image ${index + 1}`}
-                          className={`
-                            relative
-                            h-24
-                            w-20
-                            shrink-0
-                            overflow-hidden
-                            border
-                            transition-colors
-                            lg:h-28
-                            lg:w-full
-                            ${
-                              selected
-                                ? "border-brand-black"
-                                : "border-transparent hover:border-brand-black/40"
-                            }
-                          `}
-                        >
-                          <img
-                            src={image}
-                            alt={`${product.name} view ${index + 1}`}
-                            className="h-full w-full object-cover"
-                          />
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
+            <Link
+              to="/shop"
+              className="
+                absolute
+                left-5
+                top-5
+                inline-flex
+                items-center
+                gap-2
+                bg-brand-ivory/90
+                px-4
+                py-3
+                text-[10px]
+                font-semibold
+                uppercase
+                tracking-[0.2em]
+                text-brand-black
+                backdrop-blur
+                transition-colors
+                hover:bg-brand-black
+                hover:text-white
+                md:left-8
+                md:top-8
+              "
+            >
+              <ArrowLeft size={14} />
+              Shop
+            </Link>
+          </div>
+        </section>
 
-                {/* Main image */}
-                <div
-                  className="
-                    order-1
-                    relative
-                    aspect-[4/5]
-                    min-h-[520px]
-                    overflow-hidden
-                    lg:order-2
-                    lg:aspect-auto
-                    lg:min-h-[820px]
-                  "
-                >
-                  <img
-                    key={activeImage}
-                    src={activeImage || product.image}
-                    alt={product.name}
-                    className="
-                      h-full
-                      w-full
-                      object-cover
-                      transition-opacity
-                      duration-500
-                    "
-                  />
+        {/* Product information */}
+        <section
+          className="
+            border-l
+            border-brand-black/10
+            px-6
+            py-14
+            md:px-10
+            lg:px-14
+            lg:py-20
+          "
+        >
+          <div className="mx-auto max-w-xl">
+            <p
+              className="
+                text-[10px]
+                font-semibold
+                uppercase
+                tracking-[0.3em]
+                text-brand-black/50
+              "
+            >
+              {product.category}
+            </p>
 
-                  <div
-                    className="
-                      pointer-events-none
-                      absolute
-                      inset-0
-                      bg-gradient-to-t
-                      from-black/10
-                      via-transparent
-                      to-transparent
-                    "
-                  />
+            <h1
+              className="
+                mt-6
+                text-5xl
+                font-semibold
+                uppercase
+                leading-[0.92]
+                tracking-[-0.045em]
+                text-brand-black
+                md:text-6xl
+                lg:text-7xl
+              "
+            >
+              {product.name}
+            </h1>
 
-                  <Link
-                    to="/shop"
-                    className="
-                      absolute
-                      left-5
-                      top-5
-                      inline-flex
-                      items-center
-                      gap-2
-                      bg-brand-ivory/90
-                      px-4
-                      py-3
-                      text-[10px]
-                      font-semibold
-                      uppercase
-                      tracking-[0.2em]
-                      text-brand-black
-                      backdrop-blur-sm
-                      transition
-                      hover:bg-brand-black
-                      hover:text-white
-                      md:left-8
-                      md:top-8
-                    "
-                  >
-                    <ArrowLeft size={14} />
-                    Shop
-                  </Link>
-                </div>
-              </div>
-            </div>
+            <p
+              className="
+                mt-7
+                text-xl
+                font-semibold
+                text-brand-black
+              "
+            >
+              {formatCurrency(product.price)}
+            </p>
 
-            {/* Product information */}
-            <div className="px-6 py-12 md:px-10 lg:px-14 lg:py-20">
-              <div className="lg:sticky lg:top-28">
-                <p
+            <p
+              className="
+                mt-7
+                max-w-lg
+                text-[15px]
+                leading-7
+                text-brand-black/65
+              "
+            >
+              {product.description}
+            </p>
+
+            {/* Color selector */}
+            <div
+              className="
+                mt-10
+                border-t
+                border-brand-black/15
+                pt-8
+              "
+            >
+              <div className="flex items-center justify-between gap-5">
+                <h2
                   className="
                     text-[11px]
                     font-semibold
                     uppercase
-                    tracking-[0.32em]
-                    text-brand-black/65
+                    tracking-[0.22em]
                   "
                 >
-                  {product.label || product.category}
+                  Select color
+                </h2>
+
+                <p className="text-xs text-brand-black/50">
+                  {selectedColor?.label}
                 </p>
+              </div>
 
-                <h1
-                  className="
-                    mt-6
-                    max-w-xl
-                    text-5xl
-                    font-semibold
-                    uppercase
-                    leading-[0.92]
-                    tracking-[-0.045em]
-                    text-brand-black
-                    md:text-6xl
-                    lg:text-7xl
-                  "
-                >
-                  {product.name}
-                </h1>
+              <div className="mt-6 grid grid-cols-2 gap-2">
+                {product.colors.map((color) => {
+                  const selected =
+                    selectedColorCode === color.code;
 
-                <p
-                  className="
-                    mt-7
-                    text-xl
-                    font-semibold
-                    tracking-tight
-                    text-brand-black
-                  "
-                >
-                  {formattedPrice}
-                </p>
-
-                {/* Length */}
-                {product.lengths?.length > 0 && (
-                  <div className="mt-10 border-t border-brand-black/15 pt-7">
-                    <div className="flex items-center justify-between">
-                      <h2
-                        className="
-                          text-xs
-                          font-semibold
-                          uppercase
-                          tracking-[0.22em]
-                          text-brand-black
-                        "
-                      >
-                        Length
-                      </h2>
-
-                      <p className="text-xs text-brand-muted">
-                        {selectedLength}"
-                      </p>
-                    </div>
-
-                    <div className="mt-5 grid grid-cols-3 gap-2 sm:grid-cols-6">
-                      {product.lengths.map((length) => {
-                        const selected = selectedLength === length;
-
-                        return (
-                          <button
-                            key={length}
-                            type="button"
-                            onClick={() => setSelectedLength(length)}
-                            aria-pressed={selected}
-                            className={`
-                              flex
-                              h-12
-                              items-center
-                              justify-center
-                              border
-                              text-sm
-                              font-semibold
-                              transition-colors
-                              ${
-                                selected
-                                  ? "border-brand-black bg-brand-black text-white"
-                                  : "border-brand-black/20 bg-transparent text-brand-black hover:border-brand-black"
-                              }
-                            `}
-                          >
-                            {length}"
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* Details */}
-                <div className="mt-9 border-t border-brand-black/15 pt-7">
-                  <h2
-                    className="
-                      text-xs
-                      font-semibold
-                      uppercase
-                      tracking-[0.22em]
-                      text-brand-black
-                    "
-                  >
-                    Details
-                  </h2>
-
-                  <p
-                    className="
-                      mt-4
-                      max-w-lg
-                      text-[15px]
-                      leading-7
-                      text-brand-black/75
-                    "
-                  >
-                    {product.description}
-                  </p>
-                </div>
-
-                {/* Quantity and cart */}
-                <div className="mt-9 border-t border-brand-black/15 pt-7">
-                  <div
-                    className="
-                      grid
-                      grid-cols-[116px_minmax(0,1fr)]
-                      gap-3
-                    "
-                  >
-                    <div
-                      className="
-                        flex
-                        h-14
-                        items-center
-                        justify-between
+                  return (
+                    <button
+                      key={color.code}
+                      type="button"
+                      onClick={() =>
+                        setSelectedColorCode(color.code)
+                      }
+                      aria-pressed={selected}
+                      className={`
+                        min-h-20
                         border
-                        border-brand-black/25
-                        px-3
-                      "
+                        px-4
+                        py-4
+                        text-left
+                        transition-colors
+                        ${
+                          selected
+                            ? "border-brand-black bg-brand-black text-white"
+                            : "border-brand-black/20 bg-transparent text-brand-black hover:border-brand-black"
+                        }
+                      `}
                     >
-                      <button
-                        type="button"
-                        onClick={decreaseQuantity}
-                        disabled={quantity === 1}
-                        aria-label="Decrease quantity"
+                      <span
                         className="
-                          flex
-                          h-8
-                          w-8
-                          items-center
-                          justify-center
-                          text-brand-black
-                          transition-opacity
-                          disabled:cursor-not-allowed
-                          disabled:opacity-30
+                          block
+                          text-lg
+                          font-semibold
+                          leading-none
                         "
                       >
-                        <Minus size={16} strokeWidth={1.7} />
-                      </button>
-
-                      <span className="text-sm font-semibold">
-                        {quantity}
+                        {color.code}
                       </span>
 
-                      <button
-                        type="button"
-                        onClick={increaseQuantity}
-                        aria-label="Increase quantity"
-                        className="
-                          flex
-                          h-8
-                          w-8
-                          items-center
-                          justify-center
-                          text-brand-black
-                        "
+                      <span
+                        className={`
+                          mt-2
+                          block
+                          text-[10px]
+                          font-medium
+                          uppercase
+                          tracking-[0.16em]
+                          ${
+                            selected
+                              ? "text-white/65"
+                              : "text-brand-black/50"
+                          }
+                        `}
                       >
-                        <Plus size={16} strokeWidth={1.7} />
-                      </button>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={handleAddToCart}
-                      className="
-                        flex
-                        h-14
-                        items-center
-                        justify-center
-                        gap-3
-                        bg-brand-black
-                        px-6
-                        text-xs
-                        font-semibold
-                        uppercase
-                        tracking-[0.22em]
-                        text-white
-                        transition-colors
-                        hover:bg-[#3a2a24]
-                      "
-                    >
-                      <ShoppingBag size={17} strokeWidth={1.6} />
-                      Add to cart
+                        {color.name}
+                      </span>
                     </button>
-                  </div>
+                  );
+                })}
+              </div>
+            </div>
 
-                  <p
-                    className="
-                      mt-4
-                      text-center
-                      text-[10px]
-                      uppercase
-                      tracking-[0.18em]
-                      text-brand-muted
-                    "
-                  >
-                    Selected length: {selectedLength}"
-                  </p>
-                </div>
+            {/* Quantity */}
+            <div
+              className="
+                mt-10
+                border-t
+                border-brand-black/15
+                pt-8
+              "
+            >
+              <div className="flex items-center justify-between">
+                <h2
+                  className="
+                    text-[11px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.22em]
+                  "
+                >
+                  Quantity
+                </h2>
+
+                <p className="text-xs text-brand-black/50">
+                  {quantity} item{quantity !== 1 ? "s" : ""}
+                </p>
+              </div>
+
+              <div
+                className="
+                  mt-5
+                  flex
+                  h-14
+                  w-36
+                  items-center
+                  border
+                  border-brand-black/25
+                "
+              >
+                <button
+                  type="button"
+                  onClick={decreaseQuantity}
+                  disabled={quantity === 1}
+                  aria-label="Decrease quantity"
+                  className="
+                    flex
+                    h-full
+                    w-12
+                    items-center
+                    justify-center
+                    transition-colors
+                    hover:bg-brand-black
+                    hover:text-white
+                    disabled:cursor-not-allowed
+                    disabled:opacity-30
+                    disabled:hover:bg-transparent
+                    disabled:hover:text-brand-black
+                  "
+                >
+                  <Minus size={16} />
+                </button>
+
+                <span
+                  className="
+                    flex
+                    h-full
+                    flex-1
+                    items-center
+                    justify-center
+                    border-x
+                    border-brand-black/20
+                    text-sm
+                    font-semibold
+                  "
+                >
+                  {quantity}
+                </span>
+
+                <button
+                  type="button"
+                  onClick={increaseQuantity}
+                  aria-label="Increase quantity"
+                  className="
+                    flex
+                    h-full
+                    w-12
+                    items-center
+                    justify-center
+                    transition-colors
+                    hover:bg-brand-black
+                    hover:text-white
+                  "
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Add to cart */}
+            <div
+              className="
+                mt-10
+                border-t
+                border-brand-black/15
+                pt-8
+              "
+            >
+              <button
+                type="button"
+                onClick={handleAddToCart}
+                className="
+                  flex
+                  h-16
+                  w-full
+                  items-center
+                  justify-center
+                  gap-3
+                  bg-brand-black
+                  px-6
+                  text-xs
+                  font-semibold
+                  uppercase
+                  tracking-[0.22em]
+                  text-white
+                  transition-colors
+                  hover:bg-[#3a2a24]
+                "
+              >
+                <ShoppingBag
+                  size={17}
+                  strokeWidth={1.6}
+                />
+
+                Add to bag — {formatCurrency(lineTotal)}
+              </button>
+
+              <div
+                className="
+                  mt-5
+                  flex
+                  justify-between
+                  gap-4
+                  text-[10px]
+                  uppercase
+                  tracking-[0.14em]
+                  text-brand-black/45
+                "
+              >
+                <span>
+                  Color: {selectedColor?.code}
+                </span>
+
+                <span>
+                  Quantity: {quantity}
+                </span>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }

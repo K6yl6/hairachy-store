@@ -11,6 +11,33 @@ function formatCurrency(value) {
   ).toLocaleString("en-GH")}`;
 }
 
+function getColorLabel(item) {
+  if (!item.color) {
+    return "";
+  }
+
+  if (typeof item.color === "string") {
+    return item.color;
+  }
+
+  if (item.color.label) {
+    return item.color.label;
+  }
+
+  if (
+    item.color.name &&
+    item.color.code
+  ) {
+    return `${item.color.name} — ${item.color.code}`;
+  }
+
+  return (
+    item.color.name ||
+    item.color.code ||
+    ""
+  );
+}
+
 function CartItem({ item }) {
   const {
     removeFromCart,
@@ -28,20 +55,27 @@ function CartItem({ item }) {
   const lineTotal =
     unitPrice * quantity;
 
+  const colorLabel =
+    getColorLabel(item);
+
   return (
     <article
       className="
         grid
-        grid-cols-[96px_minmax(0,1fr)]
-        gap-5
+        grid-cols-[76px_minmax(0,1fr)]
+        gap-3
         border-b
         border-brand-black/10
         py-6
+        sm:grid-cols-[96px_minmax(0,1fr)]
+        sm:gap-5
       "
     >
+      {/* Product image */}
       <div
         className="
           aspect-[4/5]
+          self-start
           overflow-hidden
           bg-[#ddd2c8]
         "
@@ -58,13 +92,17 @@ function CartItem({ item }) {
         />
       </div>
 
+      {/* Product information */}
       <div className="min-w-0">
         <div
           className="
             flex
-            items-start
-            justify-between
-            gap-4
+            flex-col
+            gap-2
+            sm:flex-row
+            sm:items-start
+            sm:justify-between
+            sm:gap-4
           "
         >
           <div className="min-w-0">
@@ -74,8 +112,9 @@ function CartItem({ item }) {
                   text-[9px]
                   font-semibold
                   uppercase
-                  tracking-[0.24em]
+                  tracking-[0.2em]
                   text-brand-black/45
+                  sm:tracking-[0.24em]
                 "
               >
                 {item.category}
@@ -85,11 +124,13 @@ function CartItem({ item }) {
             <h3
               className="
                 mt-2
+                break-words
                 font-serif
-                text-xl
+                text-lg
                 font-medium
                 leading-tight
                 text-brand-black
+                sm:text-xl
               "
             >
               {item.name}
@@ -108,17 +149,25 @@ function CartItem({ item }) {
           </p>
         </div>
 
+        {/* Selected product options */}
         <div
           className="
             mt-3
             flex
-            flex-wrap
-            gap-x-4
-            gap-y-1
-            text-xs
+            flex-col
+            gap-1
+            text-[11px]
+            leading-5
             text-brand-black/55
+            sm:text-xs
           "
         >
+          {colorLabel && (
+            <span>
+              Color: {colorLabel}
+            </span>
+          )}
+
           {item.length && (
             <span>
               Length: {item.length}&quot;
@@ -130,19 +179,25 @@ function CartItem({ item }) {
           </span>
         </div>
 
+        {/* Quantity and remove */}
         <div
           className="
             mt-5
             flex
-            items-center
-            justify-between
-            gap-4
+            flex-col
+            items-start
+            gap-3
+            sm:flex-row
+            sm:items-center
+            sm:justify-between
+            sm:gap-4
           "
         >
           <div
             className="
               flex
               h-10
+              shrink-0
               items-center
               border
               border-brand-black/20
@@ -161,7 +216,7 @@ function CartItem({ item }) {
               className="
                 flex
                 h-full
-                w-10
+                w-9
                 items-center
                 justify-center
                 text-brand-black
@@ -172,6 +227,7 @@ function CartItem({ item }) {
                 disabled:opacity-30
                 disabled:hover:bg-transparent
                 disabled:hover:text-brand-black
+                sm:w-10
               "
             >
               <Minus
@@ -184,7 +240,7 @@ function CartItem({ item }) {
               className="
                 flex
                 h-full
-                min-w-9
+                min-w-8
                 items-center
                 justify-center
                 border-x
@@ -193,6 +249,7 @@ function CartItem({ item }) {
                 text-xs
                 font-semibold
                 text-brand-black
+                sm:min-w-9
               "
             >
               {quantity}
@@ -210,13 +267,14 @@ function CartItem({ item }) {
               className="
                 flex
                 h-full
-                w-10
+                w-9
                 items-center
                 justify-center
                 text-brand-black
                 transition-colors
                 hover:bg-brand-black
                 hover:text-white
+                sm:w-10
               "
             >
               <Plus
@@ -229,20 +287,25 @@ function CartItem({ item }) {
           <button
             type="button"
             onClick={() =>
-              removeFromCart(item.cartKey)
+              removeFromCart(
+                item.cartKey
+              )
             }
             className="
+              shrink-0
+              whitespace-nowrap
               border-b
               border-brand-black/30
               pb-1
               text-[10px]
               font-semibold
               uppercase
-              tracking-[0.18em]
+              tracking-[0.16em]
               text-brand-black/55
               transition-colors
               hover:border-brand-black
               hover:text-brand-black
+              sm:tracking-[0.18em]
             "
           >
             Remove

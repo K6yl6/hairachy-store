@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import {
   ArrowRight,
   Mail,
+  MessageCircle,
   Phone,
 } from "lucide-react";
 import { FaInstagram } from "react-icons/fa";
@@ -10,10 +11,12 @@ import { toast } from "sonner";
 
 const CONTACT = {
   phone:
-    import.meta.env.VITE_WHATSAPP_NUMBER || "233597082755",
+    import.meta.env.VITE_WHATSAPP_NUMBER ||
+    "233597082755",
 
   phoneDisplay:
-    import.meta.env.VITE_PHONE_DISPLAY || "059 708 2755",
+    import.meta.env.VITE_PHONE_DISPLAY ||
+    "059 708 2755",
 
   email:
     import.meta.env.VITE_SUPPORT_EMAIL ||
@@ -28,55 +31,16 @@ const CONTACT = {
     "https://www.instagram.com/hairachybylady_ruby/",
 };
 
-const shopLinks = [
-  {
-    label: "Shop all hair",
-    to: "/shop",
-  },
-  {
-    label: "Waves and curls",
-    to: "/shop",
-  },
-  {
-    label: "Straight textures",
-    to: "/shop",
-  },
-  {
-    label: "Locs and protective styles",
-    to: "/shop",
-  },
-];
-
-const supportLinks = [
-  {
-    label: "Shipping and delivery",
-    to: "/contact?topic=shipping",
-  },
-  {
-    label: "Returns and exchanges",
-    to: "/contact?topic=returns",
-  },
-  {
-    label: "Frequently asked questions",
-    to: "/contact?topic=faqs",
-  },
-  {
-    label: "Track an order",
-    to: "/contact?topic=tracking",
-  },
-  {
-    label: "Contact Hairachy",
-    to: "/contact",
-  },
-];
-
 function Footer() {
   const [email, setEmail] = useState("");
 
   const currentYear = new Date().getFullYear();
 
-  const privacyUrl = import.meta.env.VITE_PRIVACY_URL;
-  const termsUrl = import.meta.env.VITE_TERMS_URL;
+  const privacyUrl =
+    import.meta.env.VITE_PRIVACY_URL;
+
+  const termsUrl =
+    import.meta.env.VITE_TERMS_URL;
 
   const legalLinks = [
     privacyUrl
@@ -94,17 +58,27 @@ function Footer() {
       : null,
   ].filter(Boolean);
 
+  const whatsappUrl = `https://wa.me/${CONTACT.phone}?text=${encodeURIComponent(
+    "Hello Hairachy, I would like to make an enquiry."
+  )}`;
+
   function handleNewsletterSubmit(event) {
     event.preventDefault();
 
-    const cleanedEmail = email.trim().toLowerCase();
+    const cleanedEmail = email
+      .trim()
+      .toLowerCase();
 
     if (!cleanedEmail) {
-      toast.error("Enter your email address.");
+      toast.error(
+        "Enter your email address."
+      );
+
       return;
     }
 
-    const subject = "Join the Hairachy Club";
+    const subject =
+      "Join the Hairachy Club";
 
     const body = [
       "Hello Hairachy,",
@@ -114,13 +88,18 @@ function Footer() {
       `Email address: ${cleanedEmail}`,
     ].join("\n");
 
-    const mailtoUrl = `mailto:${CONTACT.email}?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(body)}`;
+    const mailtoUrl =
+      `mailto:${CONTACT.email}` +
+      `?subject=${encodeURIComponent(
+        subject
+      )}` +
+      `&body=${encodeURIComponent(body)}`;
 
     window.location.href = mailtoUrl;
 
-    toast.success("Your email application is opening.");
+    toast.success(
+      "Your email application is opening."
+    );
 
     setEmail("");
   }
@@ -175,9 +154,10 @@ function Footer() {
                 text-white/48
               "
             >
-              A considered collection of hair textures and
-              protective styles created for confident,
-              expressive looks.
+              A considered collection of hair
+              textures and protective styles
+              created for confident, expressive
+              looks.
             </p>
 
             <div className="mt-8 space-y-4">
@@ -193,7 +173,11 @@ function Footer() {
                   hover:text-white
                 "
               >
-                <Phone size={15} strokeWidth={1.5} />
+                <Phone
+                  size={15}
+                  strokeWidth={1.5}
+                />
+
                 {CONTACT.phoneDisplay}
               </a>
 
@@ -210,7 +194,11 @@ function Footer() {
                   hover:text-white
                 "
               >
-                <Mail size={15} strokeWidth={1.5} />
+                <Mail
+                  size={15}
+                  strokeWidth={1.5}
+                />
+
                 {CONTACT.email}
               </a>
             </div>
@@ -218,26 +206,40 @@ function Footer() {
 
           {/* Shop */}
           <FooterColumn title="Shop">
-            {shopLinks.map((link) => (
-              <FooterLink
-                key={link.label}
-                to={link.to}
-              >
-                {link.label}
-              </FooterLink>
-            ))}
+            <FooterInternalLink to="/shop">
+              Shop all hair
+            </FooterInternalLink>
           </FooterColumn>
 
           {/* Customer care */}
           <FooterColumn title="Customer care">
-            {supportLinks.map((link) => (
-              <FooterLink
-                key={link.label}
-                to={link.to}
-              >
-                {link.label}
-              </FooterLink>
-            ))}
+            <FooterInternalLink to="/contact">
+              Contact Hairachy
+            </FooterInternalLink>
+
+            <FooterExternalLink
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <MessageCircle
+                size={15}
+                strokeWidth={1.5}
+              />
+
+              WhatsApp Hairachy
+            </FooterExternalLink>
+
+            <FooterExternalLink
+              href={`mailto:${CONTACT.email}`}
+            >
+              <Mail
+                size={15}
+                strokeWidth={1.5}
+              />
+
+              Email Hairachy
+            </FooterExternalLink>
           </FooterColumn>
 
           {/* Newsletter and Instagram */}
@@ -277,12 +279,15 @@ function Footer() {
                 text-white/48
               "
             >
-              Receive collection announcements, selected
-              offers, and hair-care updates.
+              Receive collection announcements,
+              selected offers, and hair-care
+              updates.
             </p>
 
             <form
-              onSubmit={handleNewsletterSubmit}
+              onSubmit={
+                handleNewsletterSubmit
+              }
               className="mt-8"
             >
               <label
@@ -307,7 +312,9 @@ function Footer() {
                   type="email"
                   value={email}
                   onChange={(event) =>
-                    setEmail(event.target.value)
+                    setEmail(
+                      event.target.value
+                    )
                   }
                   placeholder="Enter your email address"
                   autoComplete="email"
@@ -351,8 +358,8 @@ function Footer() {
             </form>
 
             <p className="mt-3 text-[10px] leading-5 text-white/35">
-              This currently opens an email request to join the
-              Hairachy list.
+              This opens an email request to join
+              the Hairachy mailing list.
             </p>
 
             <div className="mt-10">
@@ -420,7 +427,8 @@ function Footer() {
           "
         >
           <p>
-            © {currentYear} Hairachy. All rights reserved | Designed by Cyberverx.
+            © {currentYear} Hairachy. All rights
+            reserved | Designed by Cyberverx.
           </p>
 
           {legalLinks.length > 0 && (
@@ -445,7 +453,10 @@ function Footer() {
   );
 }
 
-function FooterColumn({ title, children }) {
+function FooterColumn({
+  title,
+  children,
+}) {
   return (
     <div>
       <p
@@ -467,7 +478,10 @@ function FooterColumn({ title, children }) {
   );
 }
 
-function FooterLink({ to, children }) {
+function FooterInternalLink({
+  to,
+  children,
+}) {
   return (
     <Link
       to={to}
@@ -496,6 +510,46 @@ function FooterLink({ to, children }) {
         "
       />
     </Link>
+  );
+}
+
+function FooterExternalLink({
+  href,
+  children,
+  ...props
+}) {
+  return (
+    <a
+      href={href}
+      {...props}
+      className="
+        group
+        relative
+        inline-flex
+        items-center
+        gap-2
+        text-sm
+        text-white/62
+        transition-colors
+        hover:text-white
+      "
+    >
+      {children}
+
+      <span
+        className="
+          absolute
+          -bottom-1
+          left-0
+          h-px
+          w-0
+          bg-white
+          transition-all
+          duration-300
+          group-hover:w-full
+        "
+      />
+    </a>
   );
 }
 

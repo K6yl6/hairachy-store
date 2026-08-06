@@ -1,62 +1,156 @@
+export const productColors = [
+  {
+    name: "Jet Black",
+    code: "1",
+    label: "Jet Black — 1",
+  },
+  {
+    name: "Natural Black",
+    code: "1B",
+    label: "Natural Black — 1B",
+  },
+  {
+    name: "Dark Brown",
+    code: "2",
+    label: "Dark Brown — 2",
+  },
+  {
+    name: "Medium Brown",
+    code: "4",
+    label: "Medium Brown — 4",
+  },
+  {
+    name: "Honey Blonde",
+    code: "27",
+    label: "Honey Blonde — 27",
+  },
+  {
+    name: "Copper Brown",
+    code: "30",
+    label: "Copper Brown — 30",
+  },
+  {
+    name: "Burgundy",
+    code: "99J",
+    label: "Burgundy — 99J",
+  },
+  {
+    name: "Black/Copper Ombré",
+    code: "T1B/30",
+    label: "Black/Copper Ombré — T1B/30",
+  },
+];
+
 const products = [
   {
-    id: 1,
-    name: "Deep Wave & Boho",
-    category: "Wave",
-    label: "Wave Texture",
-    price: 1200,
-    image: "/products/deep-wave.jpg",
-    lengths: [18, 20, 22, 24, 26, 28],
+    id: "spiral",
+    name: "Spiral",
+    category: "Curly Hair",
+    price: 50,
+    image: "/products/catalog/spiral.png",
+    colors: productColors,
     description:
-      "Soft, luxurious waves with natural movement and effortless volume.",
+      "Spiral-textured extension hair available in classic, blonde and ombré shades.",
   },
-
   {
-    id: 2,
-    name: "Darling Kinky",
-    category: "Kinky",
-    label: "Natural Texture",
-    price: 1100,
-    image: "/products/darling-kinky.jpg",
-    lengths: [18, 20, 22, 24, 26, 28],
+    id: "outre",
+    name: "Outré",
+    category: "Braiding Hair",
+    price: 40,
+    image: "/products/catalog/outre.png",
+    colors: productColors,
     description:
-      "A richly textured style with a full, natural-looking finish.",
+      "Outré braiding hair available in a selection of classic and statement colors.",
   },
-
   {
-    id: 3,
-    name: "Bone Straight",
-    category: "Straight",
-    label: "Sleek Texture",
-    price: 1300,
-    image: "/products/bone-straight.png",
-    lengths: [18, 20, 22, 24, 26, 28],
+    id: "uniqueness-kinky",
+    name: "Uniqueness Kinky",
+    category: "Kinky Hair",
+    price: 50,
+    image: "/products/catalog/uniqueness-kinky.png",
+    colors: productColors,
     description:
-      "Silky straight extensions created for a smooth and polished look.",
+      "Kinky-textured extension hair available in multiple color options.",
   },
-
   {
-    id: 4,
+    id: "queensky-kinky",
+    name: "Queensky Kinky",
+    category: "Kinky Hair",
+    price: 50,
+    image: "/products/catalog/queensky-kinky.png",
+    colors: productColors,
+    description:
+      "Queensky kinky extension hair available in several selectable colors.",
+  },
+  {
+    id: "river-locs",
+    name: "River Locs",
+    category: "Locs",
+    price: 85,
+    image: "/products/catalog/river-locs.png",
+    colors: productColors,
+    description:
+      "River loc extensions available in natural, brown, blonde, copper and burgundy shades.",
+  },
+  {
+    id: "oak-locs",
+    name: "Oak Locs",
+    category: "Locs",
+    price: 100,
+    image: "/products/catalog/oak-locs.png",
+    colors: productColors,
+    description:
+      "Oak loc extensions available across the complete Hairachy color selection.",
+  },
+  {
+    id: "soft-butterfly-locs",
+    name: "Soft Butterfly Locs",
+    category: "Locs",
+    price: 85,
+    image: "/products/catalog/soft-butterfly-locs.png",
+    colors: productColors,
+    description:
+      "Soft butterfly loc extensions offered in eight selectable colors.",
+  },
+  {
+    id: "italian-curls",
     name: "Italian Curls",
-    category: "Curls",
-    label: "Curl Texture",
-    price: 1400,
-    image: "/products/italian-curls.jpg",
-    lengths: [18, 20, 22, 24, 26, 28],
+    category: "Curly Hair",
+    price: 50,
+    image: "/products/catalog/italian-curls.png",
+    colors: productColors,
     description:
-      "Defined, elegant curls with movement, volume, and a glamorous finish.",
+      "Italian curl extensions available in natural and expressive color options.",
   },
-
   {
-    id: 5,
-    name: "Soft Butterfly Locks",
-    category: "Locks",
-    label: "Protective Style",
-    price: 1000,
-    image: "/products/butterfly-locks.avif",
-    lengths: [18, 20, 22, 24, 26, 28],
+    id: "bone-straight",
+    name: "Bone Straight",
+    category: "Straight Hair",
+    price: 50,
+    image: "/products/catalog/bone-straight.png",
+    colors: productColors,
     description:
-      "Soft protective locks with an expressive, lightweight appearance.",
+      "Straight extension hair offered in the complete Hairachy color selection.",
+  },
+  {
+    id: "body-wave",
+    name: "Body Wave",
+    category: "Wavy Hair",
+    price: 50,
+    image: "/products/catalog/body-wave.png",
+    colors: productColors,
+    description:
+      "Body-wave extension hair available in eight selectable colors.",
+  },
+  {
+    id: "darling-kinky",
+    name: "Darling Kinky",
+    category: "Kinky Hair",
+    price: 45,
+    image: "/products/catalog/darling-kinky.png",
+    colors: productColors,
+    description:
+      "Darling kinky extension hair available in all eight Hairachy color options.",
   },
 ];
 
