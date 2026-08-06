@@ -152,6 +152,16 @@ const products = [
     description:
       "Darling kinky extension hair available in all eight Hairachy color options.",
   },
+  {
+  id: "darling-passion-twist",
+  name: "Darling Passion Twist",
+  category: "Twist Hair",
+  price: 80,
+  image: "/products/catalog/darling-passion-twist.png",
+  colors: productColors,
+  description:
+    "Darling Passion Twist extensions available in all eight Hairachy color options.",
+},
 ];
 
 export default products;
