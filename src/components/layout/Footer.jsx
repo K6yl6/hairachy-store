@@ -20,7 +20,7 @@ const CONTACT = {
 
   email:
     import.meta.env.VITE_SUPPORT_EMAIL ||
-    "ladyrubyarthur@gmail.com",
+    "Hairachybylrsupport@gmail.com",
 
   instagramHandle:
     import.meta.env.VITE_INSTAGRAM_HANDLE ||
