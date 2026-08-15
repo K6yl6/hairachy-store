@@ -293,7 +293,8 @@ function CartItem({ item }) {
             }
             className="
               shrink-0
-              whitespace-nowrap
+              whitespace-normal
+              break-words
               border-b
               border-brand-black/30
               pb-1

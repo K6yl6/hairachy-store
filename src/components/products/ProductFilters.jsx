@@ -4,8 +4,8 @@ function ProductFilters({
   setActiveCategory,
 }) {
   return (
-    <div className="-mx-2 overflow-x-auto">
-      <div className="flex min-w-max items-center gap-8 px-2">
+    <div className="overflow-x-auto px-2">
+      <div className="flex min-w-max items-center gap-8">
         {categories.map((category) => {
           const active = activeCategory === category;
 
