@@ -9,7 +9,7 @@ const features = [
       "Carefully sourced extensions chosen for softness, natural movement, and a luxurious finish.",
     detail:
       "Quality textures • Elegant styles • Timeless beauty",
-    image: "/images/why-hair-quality.jpg",
+    image: "/images/why-hair-quality.png",
   },
 
   {
@@ -19,7 +19,7 @@ const features = [
       "Designed to blend beautifully with your style while creating effortless volume and confidence.",
     detail:
       "Smooth blends • Beautiful textures • Versatile looks",
-    image: "/images/why-hair-beauty.jpg",
+    image: "/images/why-hair-beauty.png",
   },
 
   {
@@ -29,7 +29,7 @@ const features = [
       "Need help finding your perfect texture or length? Our team is ready to guide you.",
     detail:
       "Expert guidance • Easy ordering • Customer care",
-    image: "/images/why-hair-service.jpg",
+    image: "/images/why-hair-service.png",
   },
 ];
 

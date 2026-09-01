@@ -163,7 +163,7 @@ function Hero() {
           }}
         >
           <img
-            src="/hero/hero-hair.jpg"
+            src="/hero/hero-hair.jpeg"
             alt="Luxury hair extension model"
             loading="eager"
             fetchPriority="high"
