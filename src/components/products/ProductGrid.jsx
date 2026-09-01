@@ -7,18 +7,25 @@ import ProductFilters from "./ProductFilters";
 
 function ProductGrid() {
   const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCategory, setActiveCategory] =
+    useState("All");
 
   const categories = useMemo(
     () => [
       "All",
-      ...new Set(products.map((product) => product.category)),
+      ...new Set(
+        products.map(
+          (product) => product.category
+        )
+      ),
     ],
     []
   );
 
   const filteredProducts = useMemo(() => {
-    const query = search.trim().toLowerCase();
+    const query = search
+      .trim()
+      .toLowerCase();
 
     return products.filter((product) => {
       const searchableContent = [
@@ -27,17 +34,23 @@ function ProductGrid() {
         product.label,
         product.description,
       ]
+        .filter(Boolean)
         .join(" ")
         .toLowerCase();
 
       const matchesSearch =
-        query === "" || searchableContent.includes(query);
+        query === "" ||
+        searchableContent.includes(query);
 
       const matchesCategory =
         activeCategory === "All" ||
-        product.category === activeCategory;
+        product.category ===
+          activeCategory;
 
-      return matchesSearch && matchesCategory;
+      return (
+        matchesSearch &&
+        matchesCategory
+      );
     });
   }, [search, activeCategory]);
 
@@ -47,67 +60,141 @@ function ProductGrid() {
   }
 
   return (
-    <div>
+    <div
+      className="
+        w-full
+        min-w-0
+        max-w-full
+        overflow-x-hidden
+      "
+    >
       {/* Search and filtering */}
-      <div className="border-y border-brand-black/10 py-7">
+      <div
+        className="
+          w-full
+          min-w-0
+          max-w-full
+          border-y
+          border-brand-black/10
+          py-7
+        "
+      >
         <div
           className="
             grid
+            w-full
+            min-w-0
+            max-w-full
             gap-8
+
             lg:grid-cols-[minmax(0,1fr)_360px]
             lg:items-end
           "
         >
-          <div>
+          <div
+            className="
+              w-full
+              min-w-0
+              max-w-full
+            "
+          >
             <p
               className="
                 mb-5
-                text-[11px]
+                text-[10px]
                 font-medium
                 uppercase
-                tracking-[0.3em]
+                tracking-[0.22em]
                 text-brand-gold
+
+                sm:text-[11px]
+                sm:tracking-[0.3em]
               "
             >
               Browse by texture
             </p>
 
-            <ProductFilters
-              categories={categories}
-              activeCategory={activeCategory}
-              setActiveCategory={setActiveCategory}
-            />
+            {/* Keep category overflow inside this area */}
+            <div
+              className="
+                w-full
+                min-w-0
+                max-w-full
+                overflow-x-auto
+                overscroll-x-contain
+                pb-2
+                [-ms-overflow-style:none]
+                [scrollbar-width:none]
+                [&::-webkit-scrollbar]:hidden
+              "
+            >
+              <ProductFilters
+                categories={categories}
+                activeCategory={
+                  activeCategory
+                }
+                setActiveCategory={
+                  setActiveCategory
+                }
+              />
+            </div>
           </div>
 
-          <ProductSearch
-            search={search}
-            setSearch={setSearch}
-          />
+          <div
+            className="
+              w-full
+              min-w-0
+              max-w-full
+            "
+          >
+            <ProductSearch
+              search={search}
+              setSearch={setSearch}
+            />
+          </div>
         </div>
       </div>
 
       {/* Result information */}
-      <div className="mt-10 flex items-center justify-between gap-5">
+      <div
+        className="
+          mt-10
+          flex
+          min-w-0
+          max-w-full
+          flex-wrap
+          items-center
+          justify-between
+          gap-5
+        "
+      >
         <p className="text-sm text-brand-muted">
           {filteredProducts.length}{" "}
-          {filteredProducts.length === 1 ? "style" : "styles"}
+          {filteredProducts.length === 1
+            ? "style"
+            : "styles"}
         </p>
 
-        {(search || activeCategory !== "All") && (
+        {(search ||
+          activeCategory !== "All") && (
           <button
             type="button"
             onClick={resetFilters}
             className="
+              shrink-0
               border-b
               border-brand-black/30
               pb-1
-              text-xs
+              text-[10px]
               uppercase
-              tracking-[0.18em]
+              tracking-[0.15em]
               text-brand-black
               transition
               hover:border-brand-gold
               hover:text-brand-gold
+
+              sm:text-xs
+              sm:tracking-[0.18em]
             "
           >
             Clear selection
@@ -115,36 +202,53 @@ function ProductGrid() {
         )}
       </div>
 
-      {/* Editorial product grid */}
+      {/* Product grid */}
       {filteredProducts.length > 0 ? (
         <div
           className="
             mt-10
             grid
+            w-full
+            min-w-0
+            max-w-full
             grid-cols-1
             gap-y-20
+
             md:grid-cols-2
             md:gap-x-8
+
             lg:grid-cols-3
             lg:gap-x-10
             lg:gap-y-24
           "
         >
-          {filteredProducts.map((product, index) => {
-            const featured = index === 0;
+          {filteredProducts.map(
+            (product, index) => {
+              const featured =
+                index === 0;
 
-            return (
-              <div
-                key={product.id}
-                className={featured ? "lg:col-span-2" : ""}
-              >
-                <ProductCard
-                  product={product}
-                  featured={featured}
-                />
-              </div>
-            );
-          })}
+              return (
+                <div
+                  key={product.id}
+                  className={`
+                    min-w-0
+                    max-w-full
+
+                    ${
+                      featured
+                        ? "lg:col-span-2"
+                        : ""
+                    }
+                  `}
+                >
+                  <ProductCard
+                    product={product}
+                    featured={featured}
+                  />
+                </div>
+              );
+            }
+          )}
         </div>
       ) : (
         <div
@@ -152,6 +256,7 @@ function ProductGrid() {
             mt-16
             border-y
             border-brand-black/10
+            px-5
             py-24
             text-center
           "
@@ -179,9 +284,17 @@ function ProductGrid() {
             Try another texture
           </h2>
 
-          <p className="mx-auto mt-4 max-w-md text-brand-muted">
-            Adjust your search or browse the complete Hairachy
-            collection.
+          <p
+            className="
+              mx-auto
+              mt-4
+              max-w-md
+              text-brand-muted
+            "
+          >
+            Adjust your search or
+            browse the complete
+            Hairachy collection.
           </p>
 
           <button

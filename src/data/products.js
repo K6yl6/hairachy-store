@@ -1,3 +1,5 @@
+export const LAUNCH_DISCOUNT_PERCENT = 5;
+
 export const productColors = [
   {
     name: "Jet Black",
@@ -41,7 +43,24 @@ export const productColors = [
   },
 ];
 
-const products = [
+function applyLaunchDiscount(price) {
+  const originalPrice = Number(price);
+
+  const discountedPrice = Number(
+    (
+      originalPrice *
+      (1 - LAUNCH_DISCOUNT_PERCENT / 100)
+    ).toFixed(2)
+  );
+
+  return {
+    originalPrice,
+    price: discountedPrice,
+    discountPercent: LAUNCH_DISCOUNT_PERCENT,
+  };
+}
+
+const baseProducts = [
   {
     id: "spiral",
     name: "Spiral",
@@ -153,15 +172,20 @@ const products = [
       "Darling kinky extension hair available in all eight Hairachy color options.",
   },
   {
-  id: "darling-passion-twist",
-  name: "Darling Passion Twist",
-  category: "Twist Hair",
-  price: 80,
-  image: "/products/catalog/darling-passion-twist.png",
-  colors: productColors,
-  description:
-    "Darling Passion Twist extensions available in all eight Hairachy color options.",
-},
+    id: "darling-passion-twist",
+    name: "Darling Passion Twist",
+    category: "Twist Hair",
+    price: 80,
+    image: "/products/catalog/darling-passion-twist.png",
+    colors: productColors,
+    description:
+      "Darling Passion Twist extensions available in all eight Hairachy color options.",
+  },
 ];
+
+const products = baseProducts.map((product) => ({
+  ...product,
+  ...applyLaunchDiscount(product.price),
+}));
 
 export default products;

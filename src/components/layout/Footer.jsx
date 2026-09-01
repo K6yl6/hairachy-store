@@ -18,9 +18,9 @@ const CONTACT = {
     import.meta.env.VITE_PHONE_DISPLAY ||
     "059 708 2755",
 
-  email:
-    import.meta.env.VITE_SUPPORT_EMAIL ||
-    "Hairachybylrsupport@gmail.com",
+email:
+  import.meta.env.VITE_SUPPORT_EMAIL ||
+  "hairachybylrsupport@gmail.com",
 
   instagramHandle:
     import.meta.env.VITE_INSTAGRAM_HANDLE ||
@@ -58,9 +58,11 @@ function Footer() {
       : null,
   ].filter(Boolean);
 
-  const whatsappUrl = `https://wa.me/${CONTACT.phone}?text=${encodeURIComponent(
-    "Hello Hairachy, I would like to make an enquiry."
-  )}`;
+  const whatsappUrl =
+    `https://wa.me/${CONTACT.phone}` +
+    `?text=${encodeURIComponent(
+      "Hello Hairachy, I would like to make an enquiry."
+    )}`;
 
   function handleNewsletterSubmit(event) {
     event.preventDefault();
@@ -97,16 +99,31 @@ function Footer() {
 
     window.location.href = mailtoUrl;
 
-    toast.success(
-      "Your email application is opening."
-    );
+    toast("Email request opening");
 
     setEmail("");
   }
 
   return (
-    <footer className="bg-[#15120f] text-[#f3eee8]">
-      <div className="mx-auto max-w-[1600px] px-6 md:px-10 lg:px-14">
+    <footer
+      className="
+        w-full
+        max-w-full
+        overflow-x-hidden
+        bg-[#15120f]
+        text-[#f3eee8]
+      "
+    >
+      <div
+        className="
+          mx-auto
+          w-full
+          max-w-[1600px]
+          px-6
+          md:px-10
+          lg:px-14
+        "
+      >
         <div
           className="
             grid
@@ -119,16 +136,29 @@ function Footer() {
           "
         >
           {/* Brand */}
-          <div className="max-w-sm">
+          <div className="min-w-0 max-w-sm">
+            {/* Same visual size as header logo */}
             <Link
               to="/"
               aria-label="Hairachy home"
-              className="inline-block"
+              className="
+                flex
+                h-[54px]
+                w-[145px]
+                items-center
+                justify-start
+              "
             >
               <img
                 src="/logo/hairachy-logo.png"
                 alt="Hairachy"
-                className="h-20 w-auto object-contain md:h-24"
+                className="
+                  block
+                  max-h-[46px]
+                  w-full
+                  object-contain
+                  object-left
+                "
               />
             </Link>
 
@@ -185,6 +215,7 @@ function Footer() {
                 href={`mailto:${CONTACT.email}`}
                 className="
                   flex
+                  min-w-0
                   items-center
                   gap-3
                   break-all
@@ -197,6 +228,7 @@ function Footer() {
                 <Mail
                   size={15}
                   strokeWidth={1.5}
+                  className="shrink-0"
                 />
 
                 {CONTACT.email}
@@ -242,8 +274,8 @@ function Footer() {
             </FooterExternalLink>
           </FooterColumn>
 
-          {/* Newsletter and Instagram */}
-          <div>
+          {/* Newsletter + Instagram */}
+          <div className="min-w-0">
             <p
               className="
                 text-[10px]
@@ -285,9 +317,7 @@ function Footer() {
             </p>
 
             <form
-              onSubmit={
-                handleNewsletterSubmit
-              }
+              onSubmit={handleNewsletterSubmit}
               className="mt-8"
             >
               <label
@@ -300,6 +330,7 @@ function Footer() {
               <div
                 className="
                   flex
+                  min-w-0
                   items-center
                   border-b
                   border-white/35
@@ -357,7 +388,14 @@ function Footer() {
               </div>
             </form>
 
-            <p className="mt-3 text-[10px] leading-5 text-white/35">
+            <p
+              className="
+                mt-3
+                text-[10px]
+                leading-5
+                text-white/35
+              "
+            >
               This opens an email request to join
               the Hairachy mailing list.
             </p>
@@ -383,6 +421,7 @@ function Footer() {
                 className="
                   mt-5
                   inline-flex
+                  max-w-full
                   items-center
                   gap-4
                   border
@@ -397,13 +436,19 @@ function Footer() {
                   hover:text-brand-black
                 "
               >
-                <FaInstagram size={18} />
+                <FaInstagram
+                  size={18}
+                  className="shrink-0"
+                />
 
-                @{CONTACT.instagramHandle}
+                <span className="min-w-0 break-all">
+                  @{CONTACT.instagramHandle}
+                </span>
 
                 <ArrowRight
                   size={16}
                   strokeWidth={1.5}
+                  className="shrink-0"
                 />
               </a>
             </div>
@@ -432,7 +477,14 @@ function Footer() {
           </p>
 
           {legalLinks.length > 0 && (
-            <div className="flex flex-wrap gap-x-7 gap-y-3">
+            <div
+              className="
+                flex
+                flex-wrap
+                gap-x-7
+                gap-y-3
+              "
+            >
               {legalLinks.map((link) => (
                 <a
                   key={link.label}
@@ -458,7 +510,7 @@ function FooterColumn({
   children,
 }) {
   return (
-    <div>
+    <div className="min-w-0">
       <p
         className="
           text-[10px]
@@ -471,7 +523,15 @@ function FooterColumn({
         {title}
       </p>
 
-      <nav className="mt-7 flex flex-col items-start gap-4">
+      <nav
+        className="
+          mt-7
+          flex
+          flex-col
+          items-start
+          gap-4
+        "
+      >
         {children}
       </nav>
     </div>
@@ -526,6 +586,7 @@ function FooterExternalLink({
         group
         relative
         inline-flex
+        max-w-full
         items-center
         gap-2
         text-sm
