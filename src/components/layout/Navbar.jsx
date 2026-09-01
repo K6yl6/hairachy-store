@@ -31,12 +31,17 @@ const navigation = [
 ];
 
 function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] =
-    useState(false);
+  const [
+    mobileMenuOpen,
+    setMobileMenuOpen,
+  ] = useState(false);
 
   return (
     <>
-      {/* Launch announcement */}
+      {/* =========================
+          LAUNCH ANNOUNCEMENT
+      ========================= */}
+
       <div
         className="
           relative
@@ -55,13 +60,15 @@ function Navbar() {
           text-[9px]
           font-semibold
           uppercase
-          tracking-[0.18em]
+          tracking-[0.16em]
           text-white
+
           sm:text-[10px]
           sm:tracking-[0.24em]
         "
       >
-        Launch Offer — 5% Off All Hair
+        Launch Offer — GH₵5 Off
+        Every Hair
       </div>
 
       <nav
@@ -79,7 +86,7 @@ function Navbar() {
         "
       >
         {/* =========================
-            MOBILE HEADER
+            MOBILE
         ========================= */}
 
         <div
@@ -95,11 +102,18 @@ function Navbar() {
             md:hidden
           "
         >
-          {/* Mobile menu */}
-          <div className="min-w-0 justify-self-start">
+          {/* Menu */}
+          <div
+            className="
+              min-w-0
+              justify-self-start
+            "
+          >
             <Sheet
               open={mobileMenuOpen}
-              onOpenChange={setMobileMenuOpen}
+              onOpenChange={
+                setMobileMenuOpen
+              }
             >
               <SheetTrigger asChild>
                 <button
@@ -150,11 +164,13 @@ function Navbar() {
                     Hairachy navigation
                   </SheetTitle>
 
-                  {/* Logo inside mobile menu */}
+                  {/* Menu logo */}
                   <Link
                     to="/"
                     onClick={() =>
-                      setMobileMenuOpen(false)
+                      setMobileMenuOpen(
+                        false
+                      )
                     }
                     aria-label="Hairachy home"
                     className="
@@ -204,25 +220,51 @@ function Navbar() {
                       Navigation
                     </p>
 
-                    <div className="mt-8 border-t border-brand-black/10">
+                    <div
+                      className="
+                        mt-8
+                        border-t
+                        border-brand-black/10
+                      "
+                    >
                       {navigation.map(
-                        (item, index) => (
+                        (
+                          item,
+                          index
+                        ) => (
                           <MobileNavLink
-                            key={item.to}
-                            to={item.to}
-                            number={`0${index + 1}`}
+                            key={
+                              item.to
+                            }
+                            to={
+                              item.to
+                            }
+                            number={`0${
+                              index +
+                              1
+                            }`}
                             onClick={() =>
-                              setMobileMenuOpen(false)
+                              setMobileMenuOpen(
+                                false
+                              )
                             }
                           >
-                            {item.label}
+                            {
+                              item.label
+                            }
                           </MobileNavLink>
                         )
                       )}
                     </div>
                   </div>
 
-                  <div className="border-t border-brand-black/10 pt-6">
+                  <div
+                    className="
+                      border-t
+                      border-brand-black/10
+                      pt-6
+                    "
+                  >
                     <p
                       className="
                         text-[10px]
@@ -231,7 +273,8 @@ function Navbar() {
                         text-brand-black/40
                       "
                     >
-                      Luxury in every strand
+                      Luxury in every
+                      strand
                     </p>
                   </div>
                 </div>
@@ -266,7 +309,7 @@ function Navbar() {
             />
           </Link>
 
-          {/* Mobile cart */}
+          {/* Cart */}
           <div
             className="
               min-w-0
@@ -278,7 +321,7 @@ function Navbar() {
         </div>
 
         {/* =========================
-            DESKTOP HEADER
+            DESKTOP
         ========================= */}
 
         <div
@@ -321,7 +364,7 @@ function Navbar() {
             />
           </Link>
 
-          {/* Desktop navigation */}
+          {/* Navigation */}
           <div
             className="
               flex
@@ -330,17 +373,19 @@ function Navbar() {
               gap-10
             "
           >
-            {navigation.map((item) => (
-              <DesktopNavLink
-                key={item.to}
-                to={item.to}
-              >
-                {item.label}
-              </DesktopNavLink>
-            ))}
+            {navigation.map(
+              (item) => (
+                <DesktopNavLink
+                  key={item.to}
+                  to={item.to}
+                >
+                  {item.label}
+                </DesktopNavLink>
+              )
+            )}
           </div>
 
-          {/* Desktop cart */}
+          {/* Cart */}
           <div className="justify-self-end">
             <CartDrawer />
           </div>
@@ -358,7 +403,9 @@ function DesktopNavLink({
     <NavLink
       to={to}
       end={to === "/"}
-      className={({ isActive }) => `
+      className={({
+        isActive,
+      }) => `
         relative
         py-2
         text-[11px]
@@ -401,7 +448,9 @@ function MobileNavLink({
       to={to}
       end={to === "/"}
       onClick={onClick}
-      className={({ isActive }) => `
+      className={({
+        isActive,
+      }) => `
         group
         flex
         min-w-0

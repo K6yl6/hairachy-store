@@ -24,7 +24,7 @@ function ProductCard({
   featured = false,
 }) {
   const onSale =
-    Number(product.discountPercent) >
+    Number(product.discountAmount) >
       0 &&
     Number(product.originalPrice) >
       Number(product.price);
@@ -65,7 +65,10 @@ function ProductCard({
           max-w-full
         "
       >
-        {/* Product image frame */}
+        {/* =========================
+            PRODUCT IMAGE
+        ========================= */}
+
         <div
           className={`
             relative
@@ -103,7 +106,7 @@ function ProductCard({
             }}
           />
 
-          {/* Launch badge */}
+          {/* Discount badge */}
           {onSale && (
             <div
               className="
@@ -117,7 +120,7 @@ function ProductCard({
                 text-[8px]
                 font-semibold
                 uppercase
-                tracking-[0.16em]
+                tracking-[0.14em]
                 text-white
 
                 sm:left-4
@@ -126,11 +129,8 @@ function ProductCard({
                 sm:tracking-[0.18em]
               "
             >
-              Launch —{" "}
-              {
-                product.discountPercent
-              }
-              % off
+              Launch — GH₵
+              {product.discountAmount} off
             </div>
           )}
 
@@ -152,7 +152,10 @@ function ProductCard({
           />
         </div>
 
-        {/* Product information */}
+        {/* =========================
+            PRODUCT INFO
+        ========================= */}
+
         <div
           className="
             w-full
@@ -161,73 +164,99 @@ function ProductCard({
             pt-5
           "
         >
-          <div
+          {/* Category */}
+          <p
             className="
-              flex
               min-w-0
               max-w-full
+              break-words
+              text-[10px]
+              font-medium
+              uppercase
+              tracking-[0.2em]
+              text-brand-gold
+
+              sm:text-[11px]
+              sm:tracking-[0.28em]
+            "
+          >
+            {product.label ||
+              product.category}
+          </p>
+
+          {/* =========================
+              PRICE
+              
+              IMPORTANT:
+              Visible on MOBILE too.
+              No hover required.
+          ========================= */}
+
+          <div
+            className="
+              mt-3
+              flex
+              w-full
               flex-wrap
-              items-start
-              justify-between
-              gap-x-5
+              items-center
+              gap-x-2
               gap-y-2
             "
           >
-            <p
-              className="
-                min-w-0
-                max-w-full
-                break-words
-                text-[10px]
-                font-medium
-                uppercase
-                tracking-[0.2em]
-                text-brand-gold
-
-                sm:text-[11px]
-                sm:tracking-[0.28em]
-              "
-            >
-              {product.label ||
-                product.category}
-            </p>
-
-            <div
-              className="
-                flex
-                shrink-0
-                items-center
-                gap-2
-              "
-            >
-              {onSale && (
-                <span
-                  className="
-                    text-xs
-                    text-brand-black/40
-                    line-through
-                  "
-                >
-                  {formatCurrency(
-                    product.originalPrice
-                  )}
-                </span>
-              )}
-
+            {/* Old price */}
+            {onSale && (
               <span
                 className="
                   text-sm
-                  font-semibold
-                  text-brand-black
+                  font-medium
+                  text-brand-black/45
+                  line-through
+                  decoration-brand-black/55
+                  decoration-1
                 "
               >
                 {formatCurrency(
-                  product.price
+                  product.originalPrice
                 )}
               </span>
-            </div>
+            )}
+
+            {/* Discount price */}
+            <span
+              className="
+                text-base
+                font-bold
+                text-brand-black
+              "
+            >
+              {formatCurrency(
+                product.price
+              )}
+            </span>
+
+            {/* Mobile-visible saving label */}
+            {onSale && (
+              <span
+                className="
+                  inline-flex
+                  items-center
+                  bg-brand-black
+                  px-2
+                  py-1
+                  text-[8px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.1em]
+                  text-white
+                "
+              >
+                Save GH₵
+                {product.discountAmount}
+              </span>
+            )}
           </div>
 
+          {/* Product name */}
           <h3
             className={`
               mt-3
@@ -249,6 +278,7 @@ function ProductCard({
             {product.name}
           </h3>
 
+          {/* Description */}
           <p
             className="
               mt-4
@@ -262,6 +292,7 @@ function ProductCard({
             {product.description}
           </p>
 
+          {/* View product */}
           <div
             className="
               mt-5

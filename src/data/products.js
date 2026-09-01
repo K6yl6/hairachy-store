@@ -1,4 +1,4 @@
-export const LAUNCH_DISCOUNT_PERCENT = 5;
+export const LAUNCH_DISCOUNT_AMOUNT = 5;
 
 export const productColors = [
   {
@@ -46,17 +46,13 @@ export const productColors = [
 function applyLaunchDiscount(price) {
   const originalPrice = Number(price);
 
-  const discountedPrice = Number(
-    (
-      originalPrice *
-      (1 - LAUNCH_DISCOUNT_PERCENT / 100)
-    ).toFixed(2)
-  );
-
   return {
     originalPrice,
-    price: discountedPrice,
-    discountPercent: LAUNCH_DISCOUNT_PERCENT,
+    price: Math.max(
+      0,
+      originalPrice - LAUNCH_DISCOUNT_AMOUNT
+    ),
+    discountAmount: LAUNCH_DISCOUNT_AMOUNT,
   };
 }
 
@@ -71,6 +67,7 @@ const baseProducts = [
     description:
       "Spiral-textured extension hair available in classic, blonde and ombré shades.",
   },
+
   {
     id: "outre",
     name: "Outré",
@@ -81,36 +78,43 @@ const baseProducts = [
     description:
       "Outré braiding hair available in a selection of classic and statement colors.",
   },
+
   {
     id: "uniqueness-kinky",
     name: "Uniqueness Kinky",
     category: "Kinky Hair",
     price: 50,
-    image: "/products/catalog/uniqueness-kinky.png",
+    image:
+      "/products/catalog/uniqueness-kinky.png",
     colors: productColors,
     description:
       "Kinky-textured extension hair available in multiple color options.",
   },
+
   {
     id: "queensky-kinky",
     name: "Queensky Kinky",
     category: "Kinky Hair",
     price: 50,
-    image: "/products/catalog/queensky-kinky.png",
+    image:
+      "/products/catalog/queensky-kinky.png",
     colors: productColors,
     description:
       "Queensky kinky extension hair available in several selectable colors.",
   },
+
   {
     id: "river-locs",
     name: "River Locs",
     category: "Locs",
     price: 85,
-    image: "/products/catalog/river-locs.png",
+    image:
+      "/products/catalog/river-locs.png",
     colors: productColors,
     description:
       "River loc extensions available in natural, brown, blonde, copper and burgundy shades.",
   },
+
   {
     id: "oak-locs",
     name: "Oak Locs",
@@ -121,71 +125,87 @@ const baseProducts = [
     description:
       "Oak loc extensions available across the complete Hairachy color selection.",
   },
+
   {
     id: "soft-butterfly-locs",
     name: "Soft Butterfly Locs",
     category: "Locs",
     price: 85,
-    image: "/products/catalog/soft-butterfly-locs.png",
+    image:
+      "/products/catalog/soft-butterfly-locs.png",
     colors: productColors,
     description:
       "Soft butterfly loc extensions offered in eight selectable colors.",
   },
+
   {
     id: "italian-curls",
     name: "Italian Curls",
     category: "Curly Hair",
     price: 50,
-    image: "/products/catalog/italian-curls.png",
+    image:
+      "/products/catalog/italian-curls.png",
     colors: productColors,
     description:
       "Italian curl extensions available in natural and expressive color options.",
   },
+
   {
     id: "bone-straight",
     name: "Bone Straight",
     category: "Straight Hair",
     price: 50,
-    image: "/products/catalog/bone-straight.png",
+    image:
+      "/products/catalog/bone-straight.png",
     colors: productColors,
     description:
       "Straight extension hair offered in the complete Hairachy color selection.",
   },
+
   {
     id: "body-wave",
     name: "Body Wave",
     category: "Wavy Hair",
     price: 50,
-    image: "/products/catalog/body-wave.png",
+    image:
+      "/products/catalog/body-wave.png",
     colors: productColors,
     description:
       "Body-wave extension hair available in eight selectable colors.",
   },
+
   {
     id: "darling-kinky",
     name: "Darling Kinky",
     category: "Kinky Hair",
     price: 45,
-    image: "/products/catalog/darling-kinky.png",
+    image:
+      "/products/catalog/darling-kinky.png",
     colors: productColors,
     description:
       "Darling kinky extension hair available in all eight Hairachy color options.",
   },
+
   {
     id: "darling-passion-twist",
     name: "Darling Passion Twist",
     category: "Twist Hair",
     price: 80,
-    image: "/products/catalog/darling-passion-twist.png",
+    image:
+      "/products/catalog/darling-passion-twist.png",
     colors: productColors,
     description:
-      "Darling Passion Twist extensions available in all eight Hairachy color options.",
+      "Darling Passion Twist extensions available in the Hairachy color selection.",
   },
 ];
 
-const products = baseProducts.map((product) => ({
-  ...product,
-  ...applyLaunchDiscount(product.price),
-}));
+const products = baseProducts.map(
+  (product) => ({
+    ...product,
+    ...applyLaunchDiscount(
+      product.price
+    ),
+  })
+);
 
 export default products;
